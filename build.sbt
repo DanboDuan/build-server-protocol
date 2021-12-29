@@ -31,7 +31,7 @@ lazy val V = new {
   val scala212 = "2.12.15"
   val scala213 = "2.13.7"
   val supportedScalaVersions = List(scala212, scala213)
-  val jsoniter = "2.11.1"
+  val jsoniter = "2.12.0"
   val java8Compat = "1.0.2"
   val lsp4j = "0.12.0"
   val scalacheck = "1.15.4"
@@ -71,10 +71,18 @@ lazy val bsp4j = project
   .settings(
     crossVersion := CrossVersion.disabled,
     autoScalaLibrary := false,
-    Compile / javacOptions ++= List(
-      "-Xlint:all",
-      "-Werror"
-    ),
+    Compile / javacOptions ++= {
+      val specifyRelease =
+        if (sys.props("java.version").startsWith("1.8"))
+          List.empty
+        else
+          List("--release", "8")
+
+      List(
+        "-Xlint:all",
+        "-Werror"
+      ) ++ specifyRelease
+    },
     Compile / doc / javacOptions := List("-Xdoclint:none"),
     Compile / javaHome := inferJavaHome(),
     Compile / doc / javaHome := inferJavaHome(),
@@ -120,7 +128,7 @@ lazy val tests = project
 lazy val `bsp-testkit` = project
   .in(file("testkit"))
   .settings(
-    Compile / mainClass := Some("ch.epfl.scala.bsp.mock.MockServer"),
+    Compile / mainClass := Some("ch.epfl.scala.bsp.testkit.mock.MockServer"),
     executableScriptName := "mockbsp",
     bashScriptExtraDefines += """addJava "-Dscript.path=${app_home}/"""" + executableScriptName.value,
     batScriptExtraDefines += """call :add_java "-Dscript.path=%APP_HOME%\\"""" + executableScriptName.value + ".bat",
