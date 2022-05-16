@@ -7,20 +7,12 @@ import org.eclipse.xtext.xbase.lib.Pure;
 import org.eclipse.xtext.xbase.lib.util.ToStringBuilder;
 
 @SuppressWarnings("all")
-public class JvmRunEnvironmentParams {
+public class PythonOptionsParams {
   @NonNull
   private List<BuildTargetIdentifier> targets;
   
-  private String originId;
-  
-  public JvmRunEnvironmentParams(@NonNull final List<BuildTargetIdentifier> targets) {
+  public PythonOptionsParams(@NonNull final List<BuildTargetIdentifier> targets) {
     this.targets = targets;
-    this.originId = null;
-  }
-  
-  public JvmRunEnvironmentParams(@NonNull final List<BuildTargetIdentifier> targets, final String originId) {
-    this.targets = targets;
-    this.originId = originId;
   }
   
   @Pure
@@ -33,21 +25,11 @@ public class JvmRunEnvironmentParams {
     this.targets = Preconditions.checkNotNull(targets, "targets");
   }
   
-  @Pure
-  public String getOriginId() {
-    return this.originId;
-  }
-  
-  public void setOriginId(final String originId) {
-    this.originId = originId;
-  }
-  
   @Override
   @Pure
   public String toString() {
     ToStringBuilder b = new ToStringBuilder(this);
     b.add("targets", this.targets);
-    b.add("originId", this.originId);
     return b.toString();
   }
   
@@ -60,16 +42,11 @@ public class JvmRunEnvironmentParams {
       return false;
     if (getClass() != obj.getClass())
       return false;
-    JvmRunEnvironmentParams other = (JvmRunEnvironmentParams) obj;
+    PythonOptionsParams other = (PythonOptionsParams) obj;
     if (this.targets == null) {
       if (other.targets != null)
         return false;
     } else if (!this.targets.equals(other.targets))
-      return false;
-    if (this.originId == null) {
-      if (other.originId != null)
-        return false;
-    } else if (!this.originId.equals(other.originId))
       return false;
     return true;
   }
@@ -77,9 +54,6 @@ public class JvmRunEnvironmentParams {
   @Override
   @Pure
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((this.targets== null) ? 0 : this.targets.hashCode());
-    return prime * result + ((this.originId== null) ? 0 : this.originId.hashCode());
+    return 31 * 1 + ((this.targets== null) ? 0 : this.targets.hashCode());
   }
 }

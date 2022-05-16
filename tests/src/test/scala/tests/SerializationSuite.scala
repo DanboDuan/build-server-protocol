@@ -59,8 +59,19 @@ class SerializationSuite extends AnyFunSuite {
     val textDocument = new URI("text.document")
 
     val range1 = bsp4s.Range(bsp4s.Position(1, 1), bsp4s.Position(1, 12))
+    val location = bsp4s.Location(bsp4s.Uri(new URI("other")), range1)
+
+    val relatedInformation = bsp4s.DiagnosticRelatedInformation(location, "message")
+
     val diagnostic1 =
-      bsp4s.Diagnostic(range1, Some(bsp4s.DiagnosticSeverity.Error), None, None, "message", None)
+      bsp4s.Diagnostic(
+        range1,
+        Some(bsp4s.DiagnosticSeverity.Error),
+        None,
+        None,
+        "message",
+        Some(List(relatedInformation))
+      )
 
     val bsp4sValue = bsp4s.PublishDiagnosticsParams(
       bsp4s.TextDocumentIdentifier(bsp4s.Uri(textDocument)),
@@ -111,5 +122,23 @@ class SerializationSuite extends AnyFunSuite {
 
     assert(bsp4jValue.getCanDebug == false)
     assert(bsp4sValue.canDebug == false)
+  }
+
+  test("ScalaTestClassesItem - backward compatible framework") {
+    val legacyJson =
+      """
+        |{
+        |  "target": {"uri": ""},
+        |  "classes": []
+        |}""".stripMargin
+
+    val bsp4jValue = gson.fromJson(legacyJson, classOf[bsp4j.ScalaTestClassesItem])
+    val bsp4sValue = readFromString[bsp4s.ScalaTestClassesItem](legacyJson)
+
+    assert(bsp4jValue.getTarget().getUri == bsp4sValue.target.uri.value)
+    assert(bsp4jValue.getClasses().asScala.toList == bsp4sValue.classes)
+
+    assert(bsp4jValue.getFramework() == null)
+    assert(bsp4sValue.framework == None)
   }
 }

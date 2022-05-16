@@ -365,7 +365,7 @@ final case class Diagnostic(
     code: Option[String],
     source: Option[String],
     message: String,
-    relatedInformation: Option[DiagnosticRelatedInformation]
+    relatedInformation: Option[List[DiagnosticRelatedInformation]]
 )
 
 object Diagnostic {
@@ -1070,7 +1070,9 @@ object ScalaTestClassesParams {
 final case class ScalaTestClassesItem(
     target: BuildTargetIdentifier,
     // Fully qualified names of test classes
-    classes: List[String]
+    classes: List[String],
+    // test framework name
+    framework: Option[String]
 )
 
 object ScalaTestClassesItem {
@@ -1130,6 +1132,25 @@ object ScalaMainClassesResult {
     JsonCodecMaker.makeWithRequiredCollectionFields
 }
 
+case class ScalaTestSuites(
+    classes: List[ScalaTestSuiteSelection],
+    jvmOptions: List[String],
+    environmentVariables: List[String]
+)
+object ScalaTestSuites {
+  implicit val codec: JsonValueCodec[ScalaTestSuites] =
+    JsonCodecMaker.makeWithRequiredCollectionFields
+}
+
+case class ScalaTestSuiteSelection(
+    className: String,
+    tests: List[String]
+)
+object ScalaTestSuiteSelection {
+  implicit val codec: JsonValueCodec[ScalaTestSuiteSelection] =
+    JsonCodecMaker.makeWithRequiredCollectionFields
+}
+
 final case class SbtBuildTarget(
     sbtVersion: String,
     autoImports: List[String],
@@ -1170,6 +1191,7 @@ object DebugSessionParams {
 object DebugSessionParamsDataKind {
   val ScalaMainClass = "scala-main-class"
   val ScalaTestSuites = "scala-test-suites"
+  val ScalaTestSuitesSelection = "scala-test-suites-selection"
   val ScalaAttachRemote = "scala-attach-remote"
 }
 
@@ -1250,5 +1272,39 @@ final case class CppOptionsResult(
 
 object CppOptionsResult {
   implicit val codec: JsonValueCodec[CppOptionsResult] =
+    JsonCodecMaker.makeWithRequiredCollectionFields
+}
+
+final case class PythonBuildTarget(
+    version: Option[String],
+    interpreter: Option[Uri]
+)
+
+object PythonBuildTarget {
+  implicit val codec: JsonValueCodec[PythonBuildTarget] =
+    JsonCodecMaker.makeWithRequiredCollectionFields
+}
+
+final case class PythonOptionsParams(targets: List[BuildTargetIdentifier])
+
+object PythonOptionsParams {
+  implicit val codec: JsonValueCodec[PythonOptionsParams] =
+    JsonCodecMaker.makeWithRequiredCollectionFields
+}
+
+final case class PythonOptionsItem(
+    target: BuildTargetIdentifier,
+    interpreterOptions: List[String]
+)
+
+object PythonOptionsItem {
+  implicit val codec: JsonValueCodec[PythonOptionsItem] =
+    JsonCodecMaker.makeWithRequiredCollectionFields
+}
+
+final case class PythonOptionsResult(items: List[PythonOptionsItem])
+
+object PythonOptionsResult {
+  implicit val codec: JsonValueCodec[PythonOptionsResult] =
     JsonCodecMaker.makeWithRequiredCollectionFields
 }

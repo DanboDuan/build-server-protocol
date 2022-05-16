@@ -184,7 +184,7 @@ trait Bsp4jGenerators {
     severity <- genDiagnosticSeverity.nullable
     code <- arbitrary[String].nullable
     source <- arbitrary[String].nullable
-    relatedInformation <- genDiagnosticRelatedInformation.nullable
+    relatedInformation <- genDiagnosticRelatedInformation.list.nullable
   } yield {
     val diagnostic = new Diagnostic(range, message)
     diagnostic.setSeverity(severity)
@@ -686,6 +686,24 @@ trait Bsp4jGenerators {
   lazy val genCppOptionsResult: Gen[CppOptionsResult] = for {
     items <- genCppOptionsItem.list
   } yield new CppOptionsResult(items)
+
+  lazy val genPythonBuildTarget: Gen[PythonBuildTarget] = for {
+    version <- arbitrary[String].nullable
+    interpreter <- genFileUriString.nullable
+  } yield new PythonBuildTarget(version, interpreter)
+
+  lazy val genPythonOptionsItem: Gen[PythonOptionsItem] = for {
+    target <- genBuildTargetIdentifier
+    interpreterOpts <- arbitrary[String].list
+  } yield new PythonOptionsItem(target, interpreterOpts)
+
+  lazy val genPythonOptionsParams: Gen[PythonOptionsParams] = for {
+    targets <- genBuildTargetIdentifier.list
+  } yield new PythonOptionsParams(targets)
+
+  lazy val genPythonOptionsResult: Gen[PythonOptionsResult] = for {
+    items <- genPythonOptionsItem.list
+  } yield new PythonOptionsResult(items)
 
   implicit class GenExt[T](gen: Gen[T]) {
     def optional: Gen[Option[T]] = Gen.option(gen)

@@ -29,12 +29,12 @@ inThisBuild(
 
 lazy val V = new {
   val scala212 = "2.12.15"
-  val scala213 = "2.13.7"
+  val scala213 = "2.13.8"
   val supportedScalaVersions = List(scala212, scala213)
-  val jsoniter = "2.12.0"
+  val jsoniter = "2.13.17"
   val java8Compat = "1.0.2"
   val lsp4j = "0.12.0"
-  val scalacheck = "1.15.4"
+  val scalacheck = "1.16.0"
 }
 
 import java.io.File
@@ -117,8 +117,8 @@ lazy val tests = project
       "com.googlecode.java-diff-utils" % "diffutils" % "1.3.0",
       "org.scala-lang.modules" %% "scala-java8-compat" % V.java8Compat,
       "org.scala-sbt.ipcsocket" % "ipcsocket" % "1.4.0",
-      "org.scalatest" %% "scalatest" % "3.2.10",
-      "org.scalatestplus" %% "scalacheck-1-15" % "3.2.10.0",
+      "org.scalatest" %% "scalatest" % "3.2.11",
+      "org.scalatestplus" %% "scalacheck-1-15" % "3.2.11.0",
       "org.scalacheck" %% "scalacheck" % V.scalacheck,
       "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core" % V.jsoniter
     )
@@ -134,8 +134,9 @@ lazy val `bsp-testkit` = project
     batScriptExtraDefines += """call :add_java "-Dscript.path=%APP_HOME%\\"""" + executableScriptName.value + ".bat",
     libraryDependencies ++= List(
       "org.scalacheck" %% "scalacheck" % V.scalacheck,
+      "de.danielbechler" % "java-object-diff" % "0.95",
       "org.scala-lang.modules" %% "scala-java8-compat" % V.java8Compat,
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.6.0"
+      "org.scala-lang.modules" %% "scala-collection-compat" % "2.7.0"
     ),
     crossScalaVersions := V.supportedScalaVersions
   )
